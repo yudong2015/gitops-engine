@@ -236,6 +236,7 @@ func ThreeWayDiff(orig, config, live *unstructured.Unstructured) (*DiffResult, e
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("patch: %s, newVersionObject: %t", string(patchBytes), newVersionedObject==nil)
 
 	// 2. get expected live object by applying the patch against the live object
 	liveBytes, err := json.Marshal(live)
