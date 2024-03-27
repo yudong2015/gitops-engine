@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/jsonmergepatch"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/klog/v2"
 
 	"github.com/argoproj/gitops-engine/internal/kubernetes_vendor/pkg/api/v1/endpoints"
 	jsonutil "github.com/argoproj/gitops-engine/pkg/utils/json"
@@ -236,7 +237,7 @@ func ThreeWayDiff(orig, config, live *unstructured.Unstructured) (*DiffResult, e
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("patch: %s, newVersionObject: %t", string(patchBytes), newVersionedObject==nil)
+	klog.Infof("patch: %s, newVersionObject: %t", string(patchBytes), newVersionedObject==nil)
 
 	// 2. get expected live object by applying the patch against the live object
 	liveBytes, err := json.Marshal(live)
@@ -419,6 +420,7 @@ func DiffArray(configArray, liveArray []*unstructured.Unstructured, opts ...Opti
 	for i := 0; i < numItems; i++ {
 		config := configArray[i]
 		live := liveArray[i]
+		klog.Infof("[%d] config: %v, live: %v", i, config, live)
 		diffRes, err := Diff(config, live, opts...)
 		if err != nil {
 			return nil, err
