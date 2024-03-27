@@ -237,7 +237,7 @@ func ThreeWayDiff(orig, config, live *unstructured.Unstructured) (*DiffResult, e
 	if err != nil {
 		return nil, err
 	}
-	klog.Infof("patch: %s, newVersionObject: %t", string(patchBytes), newVersionedObject==nil)
+	klog.Infof("patch: %s, newVersionObject: %t", string(patchBytes), newVersionedObject!=nil)
 
 	// 2. get expected live object by applying the patch against the live object
 	liveBytes, err := json.Marshal(live)
@@ -422,6 +422,7 @@ func DiffArray(configArray, liveArray []*unstructured.Unstructured, opts ...Opti
 		live := liveArray[i]
 		klog.Infof("[%d] config: %v, live: %v", i, config, live)
 		diffRes, err := Diff(config, live, opts...)
+		klog.Infof("[%d] diffRes PredictedLive: %s, normalizedLive: %s", i, diffRes.PredictedLive, diffRes.NormalizedLive)
 		if err != nil {
 			return nil, err
 		}
