@@ -93,7 +93,7 @@ replace (
 	// https://github.com/kubernetes/kubernetes/issues/79384#issuecomment-505627280
 	k8s.io/api => k8s.io/api v0.23.1
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.23.1 // indirect
-	k8s.io/apimachinery => k8s.io/apimachinery v0.23.1 // indirect
+	k8s.io/apimachinery => github.com/yudong2015/apimachinery v0.0.0-20240328025322-a517c57aa186
 	k8s.io/apiserver => k8s.io/apiserver v0.23.1
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.23.1
 	k8s.io/client-go => k8s.io/client-go v0.23.1
