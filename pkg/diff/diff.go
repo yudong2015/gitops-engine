@@ -78,6 +78,7 @@ func Diff(config, live *unstructured.Unstructured, opts ...Option) (*DiffResult,
 	} else {
 		if orig != nil && config != nil {
 			Normalize(orig, opts...)
+			klog.Infof("## Run ThreeWayDiff..")
 			dr, err := ThreeWayDiff(orig, config, live)
 			if err == nil {
 				return dr, nil
@@ -85,6 +86,7 @@ func Diff(config, live *unstructured.Unstructured, opts ...Option) (*DiffResult,
 			o.log.V(1).Info(fmt.Sprintf("three-way diff calculation failed: %v. Falling back to two-way diff", err))
 		}
 	}
+	klog.Infof("## Run TwoWayDiff..")
 	return TwoWayDiff(config, live)
 }
 
@@ -349,6 +351,7 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 	}
 
 	if versionedObject, err := scheme.Scheme.New(orig.GroupVersionKind()); err == nil {
+		klog.Infof("## versionedObject: %v", versionedObject)
 		gk := orig.GroupVersionKind().GroupKind()
 		if (gk.Group == "apps" || gk.Group == "extensions") && gk.Kind == "StatefulSet" {
 			live = statefulSetWorkaround(orig, live)
