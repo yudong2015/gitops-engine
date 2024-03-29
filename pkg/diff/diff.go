@@ -350,6 +350,7 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		return nil, nil, err
 	}
 
+	klog.Infof("original GVK: %v", orig.GroupVersionKind())
 	if versionedObject, err := scheme.Scheme.New(orig.GroupVersionKind()); err == nil {
 		klog.Infof("## versionedObject: %v", versionedObject)
 		gk := orig.GroupVersionKind().GroupKind()
@@ -375,7 +376,7 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		}
 		return patch, newVersionedObject, nil
 	} else {
-
+		klog.Errorf("get versionedObject error: %v", err)
 		klog.Infof("## RemoveMapFields before    orig: %v,	live %v", orig.Object, live.Object)
 		// Remove defaulted fields from the live object.
 		// This subtracts any extra fields in the live object which are not present in last-applied-configuration.
