@@ -375,9 +375,12 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		}
 		return patch, newVersionedObject, nil
 	} else {
+
+		klog.Infof("## RemoveMapFields before    orig: %v,	live %v", orig.Object, live.Object)
 		// Remove defaulted fields from the live object.
 		// This subtracts any extra fields in the live object which are not present in last-applied-configuration.
 		live = &unstructured.Unstructured{Object: jsonutil.RemoveMapFields(orig.Object, live.Object)}
+		klog.Infof("## RemoveMapFields after    orig: %v,		live %v", orig.Object, live.Object)
 
 		liveBytes, err := json.Marshal(live.Object)
 		if err != nil {
