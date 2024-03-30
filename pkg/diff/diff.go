@@ -350,8 +350,11 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		return nil, nil, err
 	}
 
-	klog.Infof("original GVK: %v", orig.GroupVersionKind())
-	if versionedObject, err := scheme.Scheme.New(orig.GroupVersionKind()); err == nil {
+	klog.V(4).Infof("schema all known types: %v", scheme.Scheme.AllKnownTypes())
+
+	gvk := orig.GroupVersionKind()
+	klog.V(4).Infof("original G: %s, V: %s, K: %s", gvk.Group, gvk.Version, gvk.Kind)
+	if versionedObject, err := scheme.Scheme.New(gvk); err == nil {
 		klog.Infof("## versionedObject: %v", versionedObject)
 		gk := orig.GroupVersionKind().GroupKind()
 		if (gk.Group == "apps" || gk.Group == "extensions") && gk.Kind == "StatefulSet" {
@@ -377,11 +380,11 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		return patch, newVersionedObject, nil
 	} else {
 		klog.Errorf("get versionedObject error: %v", err)
-		klog.Infof("## RemoveMapFields before    orig: %v,	live %v", orig.Object, live.Object)
+		klog.V(4).Infof("## RemoveMapFields before    orig: %v,	live %v", orig.Object, live.Object)
 		// Remove defaulted fields from the live object.
 		// This subtracts any extra fields in the live object which are not present in last-applied-configuration.
 		live = &unstructured.Unstructured{Object: jsonutil.RemoveMapFields(orig.Object, live.Object)}
-		klog.Infof("## RemoveMapFields after    orig: %v,		live %v", orig.Object, live.Object)
+		klog.V(4).Infof("## RemoveMapFields after    orig: %v,		live %v", orig.Object, live.Object)
 
 		liveBytes, err := json.Marshal(live.Object)
 		if err != nil {
@@ -427,9 +430,9 @@ func DiffArray(configArray, liveArray []*unstructured.Unstructured, opts ...Opti
 	for i := 0; i < numItems; i++ {
 		config := configArray[i]
 		live := liveArray[i]
-		klog.Infof("[%d] config: %v, live: %v", i, config, live)
+		klog.V(4).Infof("[%d] config: %v, live: %v", i, config, live)
 		diffRes, err := Diff(config, live, opts...)
-		klog.Infof("[%d] diffRes PredictedLive: %s, normalizedLive: %s", i, diffRes.PredictedLive, diffRes.NormalizedLive)
+		klog.V(4).Infof("[%d] diffRes PredictedLive: %s, normalizedLive: %s", i, diffRes.PredictedLive, diffRes.NormalizedLive)
 		if err != nil {
 			return nil, err
 		}
