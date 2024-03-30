@@ -350,7 +350,7 @@ func threeWayMergePatch(orig, config, live *unstructured.Unstructured) ([]byte, 
 		return nil, nil, err
 	}
 
-	klog.V(4).Infof("schema all known types: %v", scheme.Scheme.AllKnownTypes())
+	klog.V(6).Infof("schema all known types: %v", scheme.Scheme.AllKnownTypes())
 
 	gvk := orig.GroupVersionKind()
 	klog.V(4).Infof("original G: %s, V: %s, K: %s", gvk.Group, gvk.Version, gvk.Kind)
